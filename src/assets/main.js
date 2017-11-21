@@ -15,12 +15,12 @@ function guess() {
         attempt.value ++;
     }
 
-    if(getResult(input.value)){
+    if(getResults(input.value)){
         setMessage("You Win! :)");
         showAnswer(true);
         showReplay();
     }
-    else if(!getResult(input.value) && attempt.value >= 10 ){
+    else if(!getResults(input.value) && attempt.value >= 10 ){
         setMessage("You Lose! :(");
         showAnswer(false);
         showReplay();
@@ -36,7 +36,7 @@ function setHiddenFields(){
     attempt.value = 0;
     answer.value = Math.floor(Math.random()*10000);
     while(answer.value.length < 4){
-        answer.value += 0 + answer.value.toString();
+        answer.value = 0 + answer.value.toString();
     }
 }
 
@@ -54,7 +54,7 @@ function validateInput(para){
     }
 }
 
-function getResult(para){
+function getResults(para){
     var correctChar=0;
     var result="<div class=\"row\"><span class=\"col-md-6\">" + para + "</span><div class=\"col-md-6\">";
     var strArr = para.split("");
