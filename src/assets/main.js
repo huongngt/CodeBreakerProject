@@ -7,6 +7,9 @@ function guess() {
     if (answer.value == "" || attempt.value == "" ){
         setHiddenFields()
     }
+
+    var bestCurrent = getBestResult();
+    setBestResult(bestCurrent);
     
     if(!validateInput(input.value)){
         return false;        
@@ -19,8 +22,9 @@ function guess() {
         setMessage("You Win! :)");
         showAnswer(true);
         showReplay();
+        setBestResult(attempt.value);
     }
-    else if(!getResults(input.value) && attempt.value >= 10 ){
+    else if(attempt.value >= 10 ){
         setMessage("You Lose! :(");
         showAnswer(false);
         showReplay();
@@ -54,16 +58,14 @@ function validateInput(para){
     }
 }
 
-function getResults(para){
-    var correctChar=0;
-    var result="<div class=\"row\"><span class=\"col-md-6\">" + para + "</span><div class=\"col-md-6\">";
-    var strArr = para.split("");
-    for(var i = 0; i < para.length; i ++){       
-        if (strArr[i] == answer.value.charAt(i)){
-            correctChar ++;
+function getResults(para){   
+    var result="<div class=\"row\"><span class=\"col-md-6\">" + para + "</span><div class=\"col-md-6\">";       
+    for(var i = 0; i < para.length; i ++){
+        
+        if (para.charAt(i) == answer.value.charAt(i)){
             result += "<span class=\"glyphicon glyphicon-ok\"></span>";
         }
-        else if (answer.value.search(strArr[i]) != -1){
+        else if (answer.value.indexOf(para.charAt(i)) != -1){
             result += "<span class=\"glyphicon glyphicon-transfer\"></span>";
         }
         else{
@@ -71,8 +73,8 @@ function getResults(para){
         }
     }
     result += "</div>";
-    document.getElementById("results").innerHTML = result;
-    if (correctChar == para.length){
+    document.getElementById("results").innerHTML += result;
+    if (para == answer.value){
         return true;
     }
     else {
@@ -94,4 +96,22 @@ function showAnswer(para){
 function showReplay(){
     document.getElementById("guessing-div").style.display = "none";
     document.getElementById("replay-div").style.display = "block";
+}
+
+function setBestResult(para){
+    var bestCurrent = getBestResult();
+    if (para < bestCurrent){
+        bestCurrent = para;
+        localStorage.setItem("bestResult", para);
+    }
+    document.getElementById("bestResult").innerHTML=bestCurrent.toString();
+}
+
+function getBestResult(){
+    var bestCurrent = localStorage.getItem("bestResult");
+    if (bestCurrent == undefined)
+    {
+        return 10;
+    }
+    else return bestCurrent
 }
